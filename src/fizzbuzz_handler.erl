@@ -78,7 +78,7 @@ valid_pagesize_number(PageSize, _PageNumber) when PageSize =< 0 ->
     {error, <<"Page size must be > 0">>};
 valid_pagesize_number(_PageSize, PageNumber) when PageNumber =< 0 ->
     {error, <<"Page number must be > 0">>};
-valid_pagesize_number(PageSize, PageNumber) when (PageNumber * PageSize) > ?MAXNUMBER ->
+valid_pagesize_number(PageSize, PageNumber) when (PageNumber * PageSize) > (?MAXNUMBER + PageSize) ->
     {error, <<"Page number and size values exceed the maximum number of items defined in the system">>};
 valid_pagesize_number(PageSize, PageNumber) ->
     {ok, {PageSize, PageNumber}}.

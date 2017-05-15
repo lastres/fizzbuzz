@@ -5,6 +5,8 @@
 %%===================================================================
 -module(fizzbuzz_json).
 
+-define(MAXNUMBER, 100000000000).
+
 -export([top_level_numbers_json/1,
          top_level_numbers_page_json/2,
          resource_number/1,
@@ -31,7 +33,7 @@ top_level_numbers_json(Number) ->
 top_level_numbers_page_json(PageSize, PageNumber) ->
     StartPoint = ((PageNumber - 1) * PageSize) + 1,
     %% TODO: Check that we do not go over the maximum number!
-    TotalPages = round(100000000000 / PageSize),
+    TotalPages = ceiling(?MAXNUMBER / PageSize),
     Meta = [{<<"meta">>, [{<<"total-pages">>, TotalPages}]}],
     Values = [{<<"data">>, numbers_list(StartPoint, PageSize)}],
     Internal = Meta ++ Values,
@@ -50,8 +52,11 @@ resource_number(Number) ->
 %% array of numbers representation
 %% @end
 -spec numbers_list(Start :: integer(), Size :: integer()) -> jsx:json_term().
-numbers_list(Start, Size) ->
+numbers_list(Start, Size) when Start + Size =< ?MAXNUMBER ->
     Numbers = lists:seq(Start, Start + Size - 1),
+    lists:map(fun resource_number/1, Numbers);
+numbers_list(Start, _Size) ->
+    Numbers = lists:seq(Start, ?MAXNUMBER),
     lists:map(fun resource_number/1, Numbers).
 
 %% @doc Given an error code and details, return a JSON object to be used as a response
@@ -64,3 +69,16 @@ error_json(HttpStatusCode, Title, Detail) ->
                                 {<<"title">>, Title},
                                 {<<"detail">>, Detail}]}],
     jsx:encode(Internal).
+
+%%===================================================================
+%% Internal Functions
+%%===================================================================
+%% Need this to round up floats!
+ceiling(X) when X < 0 ->
+    trunc(X);
+ceiling(X) ->
+    T = trunc(X),
+    case X - T == 0 of
+        true -> T;
+        false -> T + 1
+    end.

@@ -17,6 +17,7 @@ list_of_tests() ->
      fun pagination_parameters_non_integers/1,
      fun pagination_parameters_zero/1,
      fun pagination_parameters_too_big/1,
+     fun pagination_limit_of_elements/1,
      fun resource_number_zero/1,
      fun resource_number_too_big/1].
 
@@ -88,3 +89,17 @@ resource_number_too_big(_) ->
     URL = ?BASEURL ++ "numbers/" ++ integer_to_list(?MAXNUMBER + 1),
     {ok, StatusCode, _RespHeaders, _} = hackney:request("GET", URL, [], <<>>, []),
     ?_assertEqual(404, StatusCode).
+
+pagination_limit_of_elements(_) ->
+    URL1 = ?BASEURL ++ "numbers?page[number]=3030303031&page[size]=33",
+    URL2 = ?BASEURL ++ "numbers?page[number]=3030303032&page[size]=33",
+    {ok, StatusCode1, _, Client} = hackney:request("GET", URL1, [], <<>>, []),
+    ?_assertEqual(200, StatusCode1),
+    {ok, Body} = hackney:body(Client),
+    Decoded = jsx:decode(Body),
+    [{<<"meta">>,[{<<"total-pages">>,TotalPages}]}, {<<"data">>, Data}] = Decoded,
+    ?_assertEqual(3030303031, TotalPages),
+    %% 100000000000 rem 33 = 10.
+    ?_assertEqual(10, length(Data)),
+    {ok, StatusCode2, _, _} = hackney:request("GET", URL2, [], <<>>, []),
+    ?_assertEqual(400, StatusCode2).
