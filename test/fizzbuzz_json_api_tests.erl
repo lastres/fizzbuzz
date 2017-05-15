@@ -16,7 +16,9 @@ list_of_tests() ->
      fun pagination_default_values/1,
      fun pagination_parameters_non_integers/1,
      fun pagination_parameters_zero/1,
-     fun pagination_parameters_too_big/1].
+     fun pagination_parameters_too_big/1,
+     fun resource_number_zero/1,
+     fun resource_number_too_big/1].
 
 fizzbuzz_jsonapi_test_() ->
     {foreach,
@@ -76,3 +78,13 @@ pagination_parameters_too_big(_) ->
     URL = ?BASEURL ++ "numbers?page[number]=100?page[size]=" ++ integer_to_list(?MAXNUMBER),
     {ok, StatusCode, _RespHeaders, _} = hackney:request("GET", URL, [], <<>>, []),
     ?_assertEqual(400, StatusCode).
+
+resource_number_zero(_) ->
+    URL = ?BASEURL ++ "numbers/0",
+    {ok, StatusCode, _RespHeaders, _} = hackney:request("GET", URL, [], <<>>, []),
+    ?_assertEqual(404, StatusCode).
+
+resource_number_too_big(_) ->
+    URL = ?BASEURL ++ "numbers/" ++ integer_to_list(?MAXNUMBER + 1),
+    {ok, StatusCode, _RespHeaders, _} = hackney:request("GET", URL, [], <<>>, []),
+    ?_assertEqual(404, StatusCode).

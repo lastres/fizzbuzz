@@ -7,6 +7,8 @@
 
 -behaviour(application).
 
+-define(MAXNUMBER, 100000000000).
+
 %% Application callbacks
 -export([start/2, stop/1]).
 
@@ -16,7 +18,8 @@
 
 start(_StartType, _StartArgs) ->
     PathMatch = "/numbers/[:number]",
-    Constraints = [{number, int}],
+    Constraints = [{number, int},
+                   {number, function, fun number_within_range/1}],
     Dispatch = cowboy_router:compile([
                 {'_', [{PathMatch, Constraints, fizzbuzz_handler, []}]}
                 ]),
@@ -32,3 +35,12 @@ stop(_State) ->
 %%====================================================================
 %% Internal functions
 %%====================================================================
+
+%% @private
+%% @doc Cowboy will return 404 for us when the number is not within
+%% range.
+%% @end
+number_within_range(Number) when Number > 0 andalso Number =< ?MAXNUMBER ->
+    true;
+number_within_range(_Number) ->
+    false.
