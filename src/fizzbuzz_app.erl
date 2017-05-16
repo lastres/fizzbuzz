@@ -17,6 +17,9 @@
 %%====================================================================
 
 start(_StartType, _StartArgs) ->
+
+    fizzbuzz:initialize_table(),
+
     PathMatch = "/numbers/[:number]",
     Constraints = [{number, int},
                    {number, function, fun number_within_range/1}],

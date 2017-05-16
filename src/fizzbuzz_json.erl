@@ -46,7 +46,8 @@ resource_number(Number) ->
     [{<<"type">>, <<"numbers">>},
     {<<"id">>, integer_to_binary(Number)},
     {<<"attributes">>,
-     [{<<"value">>, fizzbuzz:output(Number)}]}].
+     [{<<"value">>, fizzbuzz:output(Number)},
+      {<<"favourite">>, atom_to_binary(fizzbuzz:is_favourite(Number), utf8)}]}].
 
 %% @doc Given a starting number and a total, return an internal JSON
 %% array of numbers representation

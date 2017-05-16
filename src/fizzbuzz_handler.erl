@@ -23,7 +23,8 @@ handle(Req, State) ->
     case Method of
         <<"GET">> ->
             process_get_request(Req2, State);
-        %% TODO: Process PATCH for updates of resource!
+        <<"PATCH">> ->
+            process_patch_request(Req2, State);
         _ ->
             {ok, Req3} = cowboy_req:reply(405, Req2),
             {ok, Req3, State}
@@ -35,6 +36,30 @@ terminate(_Reason, _Req, _State) ->
 %%===================================================================
 %% Internal Functions
 %%===================================================================
+
+process_patch_request(Req, State) ->
+    case {cowboy_req:binding(number, Req), cowboy_req:has_body(Req)} of
+        {{_, Req2}, false} ->
+            {ok, Req3} = cowboy_req:reply(404, Req2),
+            {ok, Req3, State};
+        {{undefined, Req2}, _} ->
+            {ok, Req3} = cowboy_req:reply(404, Req2),
+            {ok, Req3, State};
+        {{Number, Req2}, true} ->
+            {ok, Body, Req3} = cowboy_req:body(Req2),
+            {ok, Req4 } = case new_favourite_value(Body) of
+                true ->
+                    fizzbuzz:set_as_favourite(Number),
+                    cowboy_req:reply(204, Req3);
+                false ->
+                    fizzbuzz:set_as_no_favourite(Number),
+                    cowboy_req:reply(204, Req3);
+                {error, invalid_value} ->
+                    cowboy_req:reply(403, fizzbuzz_json:error_json(400, <<"Invalid resource">>,
+                                                                   <<"Invalid parameter value">>), Req3)
+            end,
+            {ok, Req4, State}
+    end.
 
 process_get_request(Req, State) ->
     case cowboy_req:binding(number, Req) of
@@ -54,7 +79,6 @@ process_get_request(Req, State) ->
     end.
 
 process_pagination_request(Req) ->
-    %% TODO: validate pagination paramters.
     {PageNumber, Req2} = cowboy_req:qs_val(<<"page[number]">>, Req, <<"1">>),
     {PageSize, Req2} = cowboy_req:qs_val(<<"page[size]">>, Req2, <<"100">>),
     case parameters_to_integer(PageSize, PageNumber) of
@@ -82,4 +106,26 @@ valid_pagesize_number(PageSize, PageNumber) when (PageNumber * PageSize) > (?MAX
     {error, <<"Page number and size values exceed the maximum number of items defined in the system">>};
 valid_pagesize_number(PageSize, PageNumber) ->
     {ok, {PageSize, PageNumber}}.
+
+new_favourite_value(Body) ->
+    try
+        Json = jsx:decode(Body),
+        [{<<"data">>,
+          [{<<"type">>, <<"numbers">>},
+           {<<"id">>, _Id},
+           {<<"attributes">>,
+            [{<<"favourite">>, Value}]}]}] = Json,
+        case Value of
+            <<"true">> ->
+                true;
+            <<"false">> ->
+                false;
+            _ ->
+                {error, invalid_value}
+        end
+    catch
+        _:_ ->
+            %% we should log here...
+            {error, invalid_value}
+    end.
 
