@@ -7,7 +7,7 @@
 
 -behaviour(application).
 
--define(MAXNUMBER, 100000000000).
+-include("fizzbuzz.hrl").
 
 %% Application callbacks
 -export([start/2, stop/1]).

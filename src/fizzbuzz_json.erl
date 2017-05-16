@@ -5,7 +5,7 @@
 %%===================================================================
 -module(fizzbuzz_json).
 
--define(MAXNUMBER, 100000000000).
+-include("fizzbuzz.hrl").
 
 -export([top_level_numbers_json/1,
          top_level_numbers_page_json/2,

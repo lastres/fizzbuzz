@@ -5,9 +5,9 @@
 -module(fizzbuzz_json_api_tests).
 
 -include_lib("eunit/include/eunit.hrl").
+-include("fizzbuzz.hrl").
 
 -define(BASEURL, "http://127.0.0.1:8080/").
--define(MAXNUMBER, 100000000000).
 
 list_of_tests() ->
     [fun simple_get/1,

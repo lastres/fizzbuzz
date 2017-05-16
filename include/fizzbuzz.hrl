@@ -1,0 +1,1 @@
+-define(MAXNUMBER, 100000000000).

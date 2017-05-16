@@ -4,7 +4,7 @@
 %%===================================================================
 -module(fizzbuzz_handler).
 
--define(MAXNUMBER, 100000000000).
+-include("fizzbuzz.hrl").
 
 %% Cowboy handler callbacks
 -export([init/3,
