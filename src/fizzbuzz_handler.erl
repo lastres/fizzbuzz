@@ -110,11 +110,9 @@ valid_pagesize_number(PageSize, PageNumber) ->
 new_favourite_value(Body) ->
     try
         Json = jsx:decode(Body),
-        [{<<"data">>,
-          [{<<"type">>, <<"numbers">>},
-           {<<"id">>, _Id},
-           {<<"attributes">>,
-            [{<<"favourite">>, Value}]}]}] = Json,
+        Data = proplists:get_value(<<"data">>, Json),
+        Attributes = proplists:get_value(<<"attributes">>, Data),
+        Value = proplists:get_value(<<"favourite">>, Attributes),
         case Value of
             <<"true">> ->
                 true;
