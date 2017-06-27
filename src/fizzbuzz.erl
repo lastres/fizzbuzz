@@ -1,4 +1,5 @@
 %%===================================================================
+%% Copyright (c) 2017, Ramon Lastres
 %% @doc This module exports functions that allow to calculate the Fizzbuzz
 %% value (s) associated with numbers.
 %% @end

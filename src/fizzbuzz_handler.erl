@@ -1,4 +1,5 @@
 %%===================================================================
+%% Copyright (c) 2017, Ramon Lastres
 %% @doc This module implements the Cowboy request handler behaviour
 %% @end
 %%===================================================================

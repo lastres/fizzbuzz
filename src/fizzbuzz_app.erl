@@ -1,4 +1,5 @@
 %%===================================================================
+%% Copyright (c) 2017, Ramon Lastres
 %% @doc Module implementing the application behaviour.
 %% It also initializes the Cowboy handler implementing the JSON Api.
 %% @end

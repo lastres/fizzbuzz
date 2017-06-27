@@ -1,4 +1,5 @@
 %%===================================================================
+%% Copyright (c) 2017, Ramon Lastres
 %% @doc This module exposes functions providing JSON object generation
 %% for implementation of the JSON API.
 %% @end
