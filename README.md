@@ -79,3 +79,29 @@ After running Eunit tests, the following command will generate an HTML coverage 
 ```
 $ ./rebar3 cover
 ```
+
+Python query script
+-
+
+A very simple Python script to query the Fizzbuzz JSON API is provided.
+
+It expects the HTTP server to be listening on localhost on port 8080.
+
+```
+$ python fizzbuzz.py --help
+usage: fizzbuzz.py [-h] [-n NUMBER] [-f FAVOURITE] [-u UNFAVOURITE]
+                   [-p PAGE SIZE]
+
+                   Query the Fizbuzz server JSON API.
+
+                   optional arguments:
+                   -h, --help            show this help message and exit
+                   -n NUMBER, --number NUMBER
+                   A resource number
+                   -f FAVOURITE, --favourite FAVOURITE
+                   A number to make favourite
+                   -u UNFAVOURITE, --unfavourite UNFAVOURITE
+                   A number to make no favourite
+                   -p PAGE SIZE, --page PAGE SIZE
+                   Page number and size
+```
