@@ -1,7 +1,7 @@
-Fizbuzz
+Fizzbuzz
 ========
 
-This is an implementation of a Fizzbuzz on top of a JSON API.
+This is an example implementation of a Fizzbuzz on top of a JSON API.
 
 It allows fetching individual numbers and also lists of them using pagination.
 
