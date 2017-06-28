@@ -1,4 +1,4 @@
-Fizzbuzz
+Fizzbuzz [![Build Status](https://travis-ci.org/lastres/fizzbuzz.svg?branch=master)](https://travis-ci.org/lastres/fizzbuzz)
 ========
 
 This is an example implementation of a Fizzbuzz on top of a JSON API.
